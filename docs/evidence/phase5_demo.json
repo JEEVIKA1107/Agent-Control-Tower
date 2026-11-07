@@ -1,0 +1,142 @@
+{
+  "phase": 5,
+  "timestamp": "2026-11-07T12:13:00.000Z",
+  "scenarios_verified": [
+    "Scenario A: Normal Agent Execution",
+    "Scenario B: Repeated Execution Anomaly",
+    "Scenario C: Token Surge Violation",
+    "Scenario D: Human Approval Workflow",
+    "Scenario E: Cryptographic Audit Verification"
+  ],
+  "scenario_a_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "scenario": "Scenario A: Normal Agent Execution",
+        "traceId": "trace-scenario-a-1762493500",
+        "agentId": "agent-customer-support-01",
+        "spansIngested": 3,
+        "totalTokens": 2050,
+        "estimatedCost": 0.0041,
+        "status": "Completed (All spans within threshold)",
+        "message": "Healthy multi-span execution ingested, dashboard metrics updated, lineage graph constructed."
+      }
+    }
+  },
+  "scenario_b_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "scenario": "Scenario B: Repeated Execution Anomaly",
+        "traceId": "trace-scenario-b-loop-1762493501",
+        "agentId": "agent-sql-generator-03",
+        "callSignature": "agent-sql-generator-03:retry_query_schema:loop",
+        "anomaly": {
+          "anomalyId": "anom-repe-1762493502-b1",
+          "type": "repeated_execution",
+          "severity": "Critical",
+          "evidence": {
+            "callSignature": "agent-sql-generator-03:retry_query_schema:loop",
+            "repeatCount": 4,
+            "threshold": 3
+          }
+        },
+        "recommendation": {
+          "actionType": "circuit_breaker",
+          "parameters": {
+            "targetAgentId": "agent-sql-generator-03",
+            "tripDurationMinutes": 15,
+            "failFast": true
+          }
+        },
+        "approvalRequest": {
+          "requestId": "appr-1762493503-b2",
+          "status": "Pending"
+        }
+      }
+    }
+  },
+  "scenario_c_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "scenario": "Scenario C: Token Surge Anomaly",
+        "traceId": "trace-scenario-c-surge-1762493504",
+        "agentId": "agent-market-researcher-04",
+        "tokensUsed": 78500,
+        "policyBudget": 50000,
+        "anomaly": {
+          "type": "token_surge",
+          "severity": "High"
+        },
+        "recommendation": {
+          "actionType": "token_throttle",
+          "parameters": {
+            "throttleTokens": 2048,
+            "budgetCeiling": 50000
+          }
+        },
+        "approvalRequest": {
+          "status": "Pending"
+        }
+      }
+    }
+  },
+  "scenario_d_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "scenario": "Scenario D: Human Approval Workflow",
+        "approvedWorkflow": {
+          "decision": "Approved",
+          "actionExecutionStatus": "simulated",
+          "actionSummary": "Simulated execution of circuit_breaker for agent agent-sql-generator-03. Policy action applied in simulated mode."
+        },
+        "rejectedWorkflow": {
+          "decision": "Rejected",
+          "actionExecutionStatus": "not_executed",
+          "actionSummary": "Action token_throttle was rejected by operator@controltower.io. No execution dispatched."
+        }
+      }
+    }
+  },
+  "scenario_e_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "scenario": "Scenario E: Cryptographic Audit Verification",
+        "beforeVerification": {
+          "valid": true,
+          "totalRecords": 14
+        },
+        "tamperDetectedVerification": {
+          "valid": false,
+          "brokenSequenceNumber": 7,
+          "reason": "Data integrity violation: Record content was modified after hash creation (tamper detected)."
+        },
+        "finalVerification": {
+          "valid": true,
+          "totalRecords": 14,
+          "message": "Audit chain integrity verified across all 14 sequential records."
+        }
+      }
+    }
+  },
+  "system_storage_status": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "agents": { "live": 0, "simulated": 7 },
+        "telemetry": { "live": 0, "simulated": 28 },
+        "anomalies": { "live": 0, "simulated": 6 },
+        "auditLogs": { "live": 0, "simulated": 14 }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "phase": 2,
+  "endpoints_tested": [
+    "/api/agents",
+    "/api/telemetry/ingest",
+    "/api/executions/lineage/:traceId",
+    "/api/dashboard/metrics"
+  ],
+  "agent_created": {
+    "agentId": "agent-token-optimizer-01",
+    "name": "Token Rate Optimizer",
+    "type": "Token Management",
+    "framework": "LangGraph",
+    "status": "Active",
+    "source": "simulated"
+  },
+  "telemetry_ingest_response": {
+    "status": 201,
+    "ingestedCount": 1,
+    "sample": {
+      "traceId": "trace-demo-pipeline-01",
+      "spanId": "span-token-check",
+      "agentId": "agent-token-optimizer-01",
+      "eventType": "llm_call",
+      "status": "success",
+      "duration": 380,
+      "tokenUsage": {
+        "promptTokens": 1200,
+        "completionTokens": 340,
+        "totalTokens": 1540
+      },
+      "stateDelta": {
+        "previousStateRef": "state_snap_init_01",
+        "currentStateRef": "state_snap_comp_02",
+        "changedFields": ["compressedPrompt", "tokenEstimate"]
+      },
+      "source": "simulated"
+    }
+  },
+  "dashboard_metrics_response": {
+    "status": 200,
+    "data": {
+      "totalAgents": 7,
+      "activeAgents": 5,
+      "failedAgents": 1,
+      "totalExecutions": 2,
+      "averageLatency": 1083,
+      "totalTokenUsage": 7060,
+      "estimatedCost": 0.0141,
+      "costRatePer1k": 0.002,
+      "activeAnomalies": 0,
+      "source": "all"
+    }
+  }
+}

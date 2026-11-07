@@ -1,0 +1,62 @@
+{
+  "phase": 3,
+  "endpoints_tested": [
+    "/api/anomalies",
+    "/api/anomalies/detect",
+    "/api/governance/policies",
+    "/api/governance/recommendations",
+    "/api/approvals",
+    "/api/approvals/:id/decision"
+  ],
+  "anomaly_sample": {
+    "anomalyId": "anom-repe-1762491200-ab12",
+    "agentId": "agent-anomaly-sentinel-02",
+    "traceId": "trace-demo-loop-01",
+    "type": "repeated_execution",
+    "severity": "Critical",
+    "description": "Repeated execution loop detected: Signature 'agent-anomaly-sentinel-02:eval_state:3a8f9c1e' executed 4 times exceeding threshold of 3.",
+    "evidence": {
+      "callSignature": "agent-anomaly-sentinel-02:eval_state:3a8f9c1e",
+      "repeatCount": 4,
+      "threshold": 3
+    },
+    "recommendedAction": "circuit_breaker",
+    "status": "New",
+    "source": "simulated"
+  },
+  "recommendation_sample": {
+    "recommendationId": "rec-circ-1762491201-xy78",
+    "anomalyId": "anom-repe-1762491200-ab12",
+    "agentId": "agent-anomaly-sentinel-02",
+    "actionType": "circuit_breaker",
+    "reason": "Critical execution failure or infinite recursion loop detected on agent agent-anomaly-sentinel-02. Recommend immediate circuit-breaker activation to halt further downstream calls.",
+    "parameters": {
+      "targetAgentId": "agent-anomaly-sentinel-02",
+      "tripDurationMinutes": 15,
+      "failFast": true
+    },
+    "status": "approved",
+    "source": "simulated"
+  },
+  "approval_decision_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Approval request appr-1762491202 marked as Approved. Action execution recorded as 'simulated'.",
+      "data": {
+        "approval": {
+          "requestId": "appr-1762491202",
+          "status": "Approved",
+          "decidedBy": "operator@controltower.io",
+          "reviewerComment": "Circuit breaker activated to isolate failing agent recursion loop."
+        },
+        "actionExecution": {
+          "actionExecutionId": "act-exec-1762491203-kl90",
+          "actionType": "circuit_breaker",
+          "status": "simulated",
+          "outputSummary": "Simulated execution of circuit_breaker for agent agent-anomaly-sentinel-02. Policy action applied in simulated mode."
+        }
+      }
+    }
+  }
+}

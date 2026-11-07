@@ -1,0 +1,19 @@
+{
+  "name": "agent-control-tower",
+  "version": "1.0.0",
+  "description": "Agent Control Tower – Multi-Agent Orchestration, Observability and Governance",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "node backend/server.js",
+    "seed": "npm run seed --prefix backend",
+    "reset-demo": "npm run reset-demo --prefix backend",
+    "test": "npm test --prefix backend",
+    "build": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "author": "Antigravity Systems Architect",
+  "license": "ISC"
+}

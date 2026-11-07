@@ -1,0 +1,157 @@
+{
+  "phase": 4,
+  "endpoints_tested": [
+    "/api/audit/logs",
+    "/api/audit/verify",
+    "/api/audit/demo/tamper",
+    "/api/audit/demo/restore",
+    "/api/integrations"
+  ],
+  "verification_before_tamper": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "valid": true,
+        "totalRecords": 8,
+        "latestHash": "d82ca48f654b7ae230b06b9b369db0a0ce9d8dcf9e102f928e4697ffdf1e56cf",
+        "message": "Audit chain integrity verified across all 8 sequential records."
+      }
+    }
+  },
+  "tampering_demonstration": {
+    "request": {
+      "endpoint": "POST /api/audit/demo/tamper",
+      "callerRole": "admin",
+      "body": {
+        "sequenceNumber": 2
+      }
+    },
+    "response": {
+      "status": 200,
+      "body": {
+        "success": true,
+        "data": {
+          "message": "Demonstration: Simulated audit record #2 has been altered without updating hash.",
+          "tamperedSequenceNumber": 2,
+          "tamperedRecordId": "evt-1762492100-demo2"
+        }
+      }
+    }
+  },
+  "verification_after_tamper": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "valid": false,
+        "brokenSequenceNumber": 2,
+        "eventId": "evt-1762492100-demo2",
+        "reason": "Data integrity violation: Record content was modified after hash creation (tamper detected).",
+        "expectedHash": "27dbb8630cf56306fc28d6365bbad7fdf138e6e5cc969ea26715ae62923fbeeb",
+        "actualHash": "4236a287fa7a26f63beeaae2913bfb83c509ba2ebf3a388e6308cf26227df37c",
+        "verifiedCount": 1,
+        "tamperedFieldPreview": {
+          "_originalDetails": {
+            "agentId": "agent-customer-support-01",
+            "name": "Customer Support Dispatcher",
+            "framework": "LangGraph",
+            "role": "Triage incoming customer tickets and route to sub-agents"
+          },
+          "_tamperedComment": "UNAUTHORIZED_MODIFICATION: Attacker injected forged authorization payload",
+          "status": "FORGED_BYPASS_APPROVAL"
+        }
+      }
+    }
+  },
+  "restoration_result": {
+    "request": {
+      "endpoint": "POST /api/audit/demo/restore",
+      "callerRole": "admin"
+    },
+    "response": {
+      "status": 200,
+      "body": {
+        "success": true,
+        "data": {
+          "message": "Audit chain successfully restored and re-hashed.",
+          "totalRestored": 8
+        }
+      }
+    }
+  },
+  "verification_after_restore": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "valid": true,
+        "totalRecords": 8,
+        "message": "Audit chain integrity verified across all 8 sequential records."
+      }
+    }
+  },
+  "integrations_status_response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "count": 6,
+      "data": [
+        {
+          "integrationId": "otel",
+          "name": "OpenTelemetry (OTel)",
+          "type": "Telemetry Protocol",
+          "status": "Connected",
+          "dataSourceType": "Direct HTTP Ingestion (/api/telemetry/ingest)",
+          "configurationStatus": "Active & Ingesting",
+          "source": "live"
+        },
+        {
+          "integrationId": "langgraph",
+          "name": "LangGraph",
+          "type": "Multi-Agent Framework",
+          "status": "Simulated Demo",
+          "dataSourceType": "Simulated StateGraph Trace Normalizer",
+          "configurationStatus": "Simulated Adapter Active",
+          "source": "simulated"
+        },
+        {
+          "integrationId": "autogen",
+          "name": "AutoGen",
+          "type": "Multi-Agent Framework",
+          "status": "Simulated Demo",
+          "dataSourceType": "Simulated Conversation Message Turns",
+          "configurationStatus": "Simulated Adapter Active",
+          "source": "simulated"
+        },
+        {
+          "integrationId": "crewai",
+          "name": "CrewAI",
+          "type": "Multi-Agent Framework",
+          "status": "Planned",
+          "dataSourceType": "Hierarchical Task Execution Hooks (Unconnected)",
+          "configurationStatus": "Planned Enhancement",
+          "source": "simulated"
+        },
+        {
+          "integrationId": "mcp",
+          "name": "Model Context Protocol (MCP)",
+          "type": "Tool Protocol",
+          "status": "Planned",
+          "dataSourceType": "JSON-RPC Tool Server Discovery",
+          "configurationStatus": "Planned Specification",
+          "source": "simulated"
+        },
+        {
+          "integrationId": "a2a",
+          "name": "Agent-to-Agent (A2A)",
+          "type": "Inter-Agent Protocol",
+          "status": "Planned",
+          "dataSourceType": "Decentralized Peer Envelope",
+          "configurationStatus": "Planned Specification",
+          "source": "simulated"
+        }
+      ]
+    }
+  }
+}

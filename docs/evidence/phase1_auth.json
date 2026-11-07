@@ -1,0 +1,39 @@
+{
+  "phase": 1,
+  "endpoint_tested": "/api/auth/login",
+  "request": {
+    "method": "POST",
+    "url": "http://localhost:5000/api/auth/login",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "email": "admin@controltower.io",
+      "password": "Admin123!"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "user": {
+        "id": "672c88f4...",
+        "name": "Chief AI Safety Officer",
+        "email": "admin@controltower.io",
+        "role": "Admin",
+        "department": "Governance & Security",
+        "source": "simulated"
+      }
+    }
+  },
+  "rbac_forbidden_example": {
+    "endpoint": "GET /api/auth/admin-only",
+    "role": "Viewer",
+    "status": 403,
+    "response": {
+      "success": false,
+      "message": "Forbidden: Role 'Viewer' is not authorized to access this resource. Required roles: Admin"
+    }
+  }
+}
