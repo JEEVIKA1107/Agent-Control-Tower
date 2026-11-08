@@ -197,5 +197,68 @@ describe('Module 9: Cryptographic Hash Chain Audit Trail', () => {
 
       expect(res.statusCode).toBe(403);
     });
+
+    it('should return 400 Bad Request when attempting to tamper with non-existent sequence', async () => {
+      const res = await request(app)
+        .post('/api/audit/demo/tamper')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ sequenceNumber: 999999 });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(/No simulated demo audit record/i);
+    });
+  });
+
+  describe('GET /api/audit and GET /api/audit/logs', () => {
+    beforeEach(async () => {
+      await appendAuditLog({
+        userId: 'admin@test-audit.io',
+        actorName: 'Audit Admin',
+        eventType: 'AGENT_REGISTERED',
+        relatedAgent: 'agent-alpha',
+        actionDetails: { name: 'Alpha Agent' },
+        source: 'simulated'
+      });
+      await appendAuditLog({
+        userId: 'admin@test-audit.io',
+        actorName: 'Audit Admin',
+        eventType: 'POLICY_UPDATED',
+        actionDetails: { threshold: 5 },
+        source: 'simulated'
+      });
+    });
+
+    it('should retrieve audit logs at /api/audit', async () => {
+      const res = await request(app)
+        .get('/api/audit')
+        .set('Authorization', `Bearer ${viewerToken}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.length).toBe(2);
+      expect(res.body.total).toBe(2);
+    });
+
+    it('should retrieve audit logs at /api/audit/logs (alias compatibility)', async () => {
+      const res = await request(app)
+        .get('/api/audit/logs')
+        .set('Authorization', `Bearer ${viewerToken}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.length).toBe(2);
+    });
+
+    it('should filter audit logs by eventType', async () => {
+      const res = await request(app)
+        .get('/api/audit?eventType=POLICY_UPDATED')
+        .set('Authorization', `Bearer ${viewerToken}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.length).toBe(1);
+      expect(res.body.data[0].eventType).toBe('POLICY_UPDATED');
+    });
   });
 });

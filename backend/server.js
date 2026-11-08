@@ -16,10 +16,25 @@ const initSocketIO = require('./sockets/socketHandler');
 const app = express();
 const server = http.createServer(app);
 
+// Parse allowed origins for CORS
+const getAllowedOrigins = () => {
+  const envUrl = process.env.CLIENT_URL;
+  if (!envUrl) return ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
+  if (envUrl === '*') return '*';
+  return envUrl.split(',').map((s) => s.trim().replace(/\/$/, ''));
+};
+
+const allowedOrigins = getAllowedOrigins();
+
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins === '*' || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   }
@@ -31,7 +46,12 @@ initSocketIO(io);
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins === '*' || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -64,10 +84,30 @@ app.use('/api/demo', require('./routes/demoRoutes'));
 // Error handling middleware
 app.use(errorHandler);
 
+// Serve frontend static build in production if available
+if (process.env.NODE_ENV === 'production' && !process.env.API_ONLY) {
+  const distPath = path.join(__dirname, '../frontend/dist');
+  if (require('fs').existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(path.resolve(distPath, 'index.html'));
+    });
+  }
+}
+
 const PORT = process.env.PORT || 5000;
 
 // Export app and server for testing with Supertest
 if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'supersecretjwtkey_control_tower_2026_secure') {
+      console.warn('[Security Warning] JWT_SECRET is unset or using the default dev key in production. Please set a strong, random secret!');
+    }
+  }
+
   connectDB().then(() => {
     server.listen(PORT, () => {
       console.log(`[Server] Agent Control Tower backend running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);

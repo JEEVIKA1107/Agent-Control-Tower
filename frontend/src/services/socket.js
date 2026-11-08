@@ -2,12 +2,23 @@ import { io } from 'socket.io-client';
 
 let socket = null;
 
+const getSocketUrl = () => {
+  if (import.meta.env.VITE_SOCKET_URL) {
+    return import.meta.env.VITE_SOCKET_URL;
+  }
+  if (import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.startsWith('http')) {
+    return import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '');
+  }
+  return window.location.origin;
+};
+
 export const initSocket = (token) => {
   if (socket) {
     socket.disconnect();
   }
 
-  socket = io(window.location.origin, {
+  const socketUrl = getSocketUrl();
+  socket = io(socketUrl, {
     auth: { token },
     autoConnect: true,
     reconnection: true,

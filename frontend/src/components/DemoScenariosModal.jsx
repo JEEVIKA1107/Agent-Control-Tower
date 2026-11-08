@@ -19,9 +19,8 @@ import './DemoScenariosModal.css';
 
 const DemoScenariosModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
-  const isOperatorOrAdmin = user?.role === 'admin' || user?.role === 'operator';
+  const { user, isAdmin, isOperator } = useAuth();
+  const isOperatorOrAdmin = isAdmin || isOperator;
 
   const [runningScenario, setRunningScenario] = useState(null);
   const [output, setOutput] = useState(null);

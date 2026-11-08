@@ -6,6 +6,7 @@ import {
   RefreshCw,
   Search,
   Lock,
+  Unlock,
   Copy,
   Check,
   AlertTriangle,
@@ -21,11 +22,11 @@ import SimulatedBadge from '../../components/SimulatedBadge';
 import './Audit.css';
 
 const Audit = () => {
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  const { user, isAdmin } = useAuth();
 
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [verifying, setVerifying] = useState(false);
   const [tampering, setTampering] = useState(false);
   const [restoring, setRestoring] = useState(false);
@@ -49,12 +50,14 @@ const Audit = () => {
   const fetchLogs = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await api.get('/audit/logs');
+      setError(null);
+      const res = await api.get('/audit?limit=100');
       if (res.data.success) {
         setLogs(res.data.data);
       }
     } catch (err) {
       console.error('[Audit] Failed to fetch audit logs:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch audit logs');
     } finally {
       setLoading(false);
     }
@@ -72,6 +75,8 @@ const Audit = () => {
       console.error('[Audit] Verification check failed:', err);
       if (err.response?.data?.data) {
         setVerificationResult(err.response.data.data);
+      } else {
+        setError(err.response?.data?.message || err.message || 'Verification failed');
       }
     } finally {
       setVerifying(false);
@@ -186,6 +191,40 @@ const Audit = () => {
           </button>
         </div>
       </div>
+
+      {/* Error Alert Banner */}
+      {error && (
+        <div style={{
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid var(--accent-rose)',
+          borderRadius: 'var(--radius-md)',
+          padding: '0.85rem 1.25rem',
+          marginBottom: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          color: 'var(--accent-rose)',
+          fontSize: '0.85rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <AlertTriangle size={16} />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Verification Status Banner */}
       {verificationResult && (

@@ -68,6 +68,12 @@ exports.simulateTamper = async (req, res, next) => {
       data: result
     });
   } catch (error) {
+    if (error.message && error.message.includes('No simulated demo audit record')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
     next(error);
   }
 };

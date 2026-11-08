@@ -1,0 +1,29 @@
+services:
+  # Backend API Service
+  - type: web
+    name: agent-control-tower-backend
+    env: node
+    plan: starter
+    buildCommand: npm install --prefix backend
+    startCommand: npm start --prefix backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        sync: false
+      - key: DEFAULT_COST_PER_1K_TOKENS
+        value: "0.002"
+      - key: DEFAULT_TOKEN_BUDGET
+        value: "50000"
+      - key: DEFAULT_MAX_DURATION_MS
+        value: "30000"
+      - key: DEFAULT_REPEAT_CALL_THRESHOLD
+        value: "3"

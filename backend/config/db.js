@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
  * Connect to MongoDB instance with robust error handling and event logging.
  */
 const connectDB = async () => {
-  const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/agent_control_tower';
+  const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/agent_control_tower';
 
   try {
     const conn = await mongoose.connect(mongoURI, {

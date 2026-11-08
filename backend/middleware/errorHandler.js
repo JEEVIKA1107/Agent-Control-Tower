@@ -35,10 +35,15 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Default server error
-  const statusCode = error.statusCode || res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode >= 400 ? statusCode : 500).json({
+  const statusCode = error.statusCode || (res.statusCode >= 400 ? res.statusCode : 500);
+  const isProduction = process.env.NODE_ENV === 'production';
+  const responseMessage = statusCode === 500 && isProduction
+    ? 'Internal Server Error'
+    : (error.message || 'Internal Server Error');
+
+  res.status(statusCode).json({
     success: false,
-    message: error.message || 'Internal Server Error'
+    message: responseMessage
   });
 };
 

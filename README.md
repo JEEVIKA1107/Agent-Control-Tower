@@ -93,7 +93,7 @@ Open your browser at: **`http://localhost:5173`**
 The test harness runs in-band against an isolated MongoDB test database (`agent_control_tower_test`):
 
 ```bash
-# Execute full backend test suite (10 test suites, 66 tests)
+# Execute full backend test suite (10 test suites, 70 tests)
 npm test
 
 # Build frontend production bundle
@@ -146,9 +146,9 @@ For detailed demonstration instructions, see [docs/DEMO_GUIDE.md](docs/DEMO_GUID
 
 ## 7. Documentation Index
 
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): Production deployment manual for Render, Railway, Vercel, Netlify, and MongoDB Atlas.
 - [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md): Step-by-step evaluator walkthrough for all 5 scenarios.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): Architectural layers, data models, and cryptographic formulas.
 - [docs/LIMITATIONS.md](docs/LIMITATIONS.md): Implemented vs simulated vs planned boundaries.
-- [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md): Full test results matrix across all 66 automated tests.
-- [docs/MANUAL_CHECKS.md](docs/MANUAL_CHECKS.md): Manual verification procedures and edge case tests.
-"# Agent-Control-Tower" 
+- [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md): Full test results matrix across all 70 automated tests.
+- [docs/MANUAL_CHECKS.md](docs/MANUAL_CHECKS.md): Manual verification procedures and edge case tests. 

@@ -52,6 +52,10 @@
 | **Phase 4** | Audit: Sequence Gap / Missing Record | Detect missing or out-of-order sequence number | valid: false, identifies missing sequence gap | **PASS** | `backend/tests/auditChain.test.js` |
 | **Phase 4** | Audit: Admin Demo Tamper & Restore | Admin simulates tamper, verifies breakage, restores chain | Breaks at sequence #, restored chain verifies valid: true | **PASS** | `backend/tests/auditChain.test.js` |
 | **Phase 4** | Audit: Demo Tamper RBAC | Viewer forbidden from triggering tampering demo | Status 403 Forbidden | **PASS** | `backend/tests/auditChain.test.js` |
+| **Phase 4** | Audit: Non-existent Sequence Tamper Request | Attempt to tamper with missing sequence returns 400 | Status 400: "No simulated demo audit record available to tamper" | **PASS** | `backend/tests/auditChain.test.js` |
+| **Phase 4** | Audit: Retrieve Audit Records (/api/audit) | Authenticated fetch of paginated audit ledger records | Status 200, returns data array and total record count | **PASS** | `backend/tests/auditChain.test.js` |
+| **Phase 4** | Audit: Route Alias Compatibility (/api/audit/logs) | Resolves `/api/audit/logs` endpoint for client compatibility | Status 200, returns data array matching `/api/audit` | **PASS** | `backend/tests/auditChain.test.js` |
+| **Phase 4** | Audit: Filter by Event Type | Filter ledger query by eventType | Status 200, returns only records matching eventType | **PASS** | `backend/tests/auditChain.test.js` |
 | **Phase 4** | Integrations: Framework & Protocol Status | List 6 integrations with type, status & data source | Status 200, OTel, LangGraph, AutoGen, CrewAI, MCP, A2A | **PASS** | `backend/tests/integrations.test.js` |
 | **Phase 4** | Integrations: Honest Source Labelling | OTel=live; LangGraph/AutoGen=simulated; MCP/A2A/CrewAI=planned | Verified: No fake connections; planned protocols unconnected | **PASS** | `backend/tests/integrations.test.js` |
 | **Phase 4** | Integrations: Authentication Gate | Reject unauthenticated query with 401 | Status 401 Unauthorized | **PASS** | `backend/tests/integrations.test.js` |

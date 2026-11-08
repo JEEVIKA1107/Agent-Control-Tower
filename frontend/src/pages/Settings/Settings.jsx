@@ -17,8 +17,7 @@ import SimulatedBadge from '../../components/SimulatedBadge';
 import './Settings.css';
 
 const Settings = () => {
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  const { user, isAdmin } = useAuth();
 
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
