@@ -23,12 +23,12 @@ const resetDemo = async () => {
     // Seed phase 4 audit & integrations
     await seedPhase4Audit();
     console.log('[Reset] Reset completed successfully.');
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'test' && require.main === module) {
       process.exit(0);
     }
   } catch (err) {
     console.error('[Reset Error]:', err);
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'test' && require.main === module) {
       process.exit(1);
     }
   }

@@ -9,7 +9,8 @@
     "seed": "npm run seed --prefix backend",
     "reset-demo": "npm run reset-demo --prefix backend",
     "test": "npm test --prefix backend",
-    "build": "npm run build --prefix frontend"
+    "build": "npm run build --prefix frontend",
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

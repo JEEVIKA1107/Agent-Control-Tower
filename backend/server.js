@@ -81,9 +81,6 @@ app.use('/api/audit', require('./routes/auditRoutes'));
 app.use('/api/integrations', require('./routes/integrationRoutes'));
 app.use('/api/demo', require('./routes/demoRoutes'));
 
-// Error handling middleware
-app.use(errorHandler);
-
 // Serve frontend static build in production if available
 if (process.env.NODE_ENV === 'production' && !process.env.API_ONLY) {
   const distPath = path.join(__dirname, '../frontend/dist');
@@ -98,6 +95,14 @@ if (process.env.NODE_ENV === 'production' && !process.env.API_ONLY) {
   }
 }
 
+// 404 handler for unmatched API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ success: false, message: `API endpoint not found: ${req.method} ${req.originalUrl}` });
+});
+
+// Centralized error handling middleware
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
 
 // Export app and server for testing with Supertest
@@ -108,7 +113,23 @@ if (process.env.NODE_ENV !== 'test') {
     }
   }
 
-  connectDB().then(() => {
+  connectDB().then(async () => {
+    // Auto-seed baseline demo data if database is empty (e.g. initial cloud deployment)
+    if (process.env.NODE_ENV === 'production' || process.env.AUTO_SEED === 'true') {
+      try {
+        const User = require('./models/User');
+        const count = await User.countDocuments();
+        if (count === 0) {
+          console.log('[Auto-Seed] Empty database detected. Seeding initial baseline data...');
+          const resetDemo = require('./seed/resetDemo');
+          await resetDemo();
+          console.log('[Auto-Seed] Baseline seeding complete.');
+        }
+      } catch (seedErr) {
+        console.warn('[Auto-Seed Warning]:', seedErr.message);
+      }
+    }
+
     server.listen(PORT, () => {
       console.log(`[Server] Agent Control Tower backend running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
     });
